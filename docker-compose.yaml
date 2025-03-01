@@ -118,8 +118,9 @@ volumes:
   prometheus-datatest:
 
 networks:
-  jupyterhub-network:
+  monitoring-network:
     name: monitoring-network
+  jupyterhub-network:
     name: jupyterhub-network
     external: true
 
