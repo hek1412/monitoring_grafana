@@ -4,22 +4,20 @@
 - О активности пользователей в JupyterHub
 - Сведения о потреблении ресурсов тетрадей ноутбука
 - Сведения о топовых таблицах в PostgreSQL с их владельцами
-Созданние и настройка алертов
-- Алерт оповещающий при заходе пользователя на сервер по SSH на почту.
-- Алерт оповещающий при превышении общей мощности контейнеров более чем на 80%.
+Созданние и настройка алертов:
+- оповещающий при заходе пользователя на сервер по SSH на почту.
+- оповещающий при превышении общей мощности контейнеров более чем на 80%.
 
 ---
 ## Описание проекта
 
-Проект предоставляет инструменты для мониторинга PostgreSQL, JupyterHub и системных метрик сервера. Он включает следующие компоненты:
-
-- **PostgreSQL**: База данных для хранения данных.
+Сервисы которые будем использовать для мониторинга PostgreSQL, JupyterHub и системных метрик сервера:
 - **Prometheus**: Система сбора метрик.
 - **Grafana**: Инструмент визуализации метрик.
 - **cAdvisor**: Мониторинг ресурсов Docker-контейнеров.
 - **Node Exporter**: Сбор системных метрик хоста.
 - **Alertmanager**: Управление оповещениями.
-- **Jupyterhub**: Управление тетрадками пользователей.
+- **pg_metrics_exporter**: Экспортер PostgreSQL.
 
 
 Учитывая что Jupyterhub у нас уже был создан в рамках выполнения другого задания, описывать процесс его развертывания не буду.
@@ -116,11 +114,11 @@ services:
     image: prom/prometheus:v3.1.0
     container_name: prometheustest
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-datatest:/prometheus
-      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml # Конфигурационный файл Prometheus
+      - prometheus-datatest:/prometheus # Volume для сохранения данных Prometheus
+      - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml  # Правила оповещений
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--config.file=/etc/prometheus/prometheus.yml' # Команда для запуска с конфигурационным файлом
     ports:
       - "35101:9090"
     restart: unless-stopped
@@ -139,7 +137,7 @@ services:
       - grafana-datatest:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true # Включение анонимного доступа
     restart: unless-stopped
 
   cadvisor:
@@ -164,17 +162,17 @@ services:
     networks:
       - monitoring-network
     volumes:
-      - /var/lib/node_exporter:/app/metrics:ro
+      - /var/lib/node_exporter:/app/metrics:ro # Монтируемая директория для метрик
     command:
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-      - '--collector.textfile.directory=/app/metrics'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"' # Игнорируемые точки монтирования
+      - '--collector.textfile.directory=/app/metrics'  # Директория для текстовых метрик
     restart: unless-stopped
 
   alertmanager:
     image: prom/alertmanager:v0.28.0
     container_name: alertmanagertest
     volumes:
-      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml # Конфигурационный файл Alertmanager
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
     ports:
@@ -322,7 +320,6 @@ grafana/PostgresQL_information.json
 Получаем уведомление! Теперь никто не пройдет не замеченным)))
 ![image](https://github.com/user-attachments/assets/0017e910-d72d-4ae5-95dc-b77eab73688e)
 
-
 ---
 
 ## Cron-задания
@@ -336,11 +333,20 @@ grafana/PostgresQL_information.json
 */1 * * * * /home/vitaliyaleks/monitoring/script/ssh_monitor.sh >> /home/vitaliyaleks/cron.log 2>&1
 */15 * * * * /home/vitaliyaleks/monitoring/script/sum_container_sizes.sh >> /home/vitaliyaleks/cron.log 2>&1
 ```
+---
 
-## Monitirinr_GPU
+## Monitiring GPU
+
 В связи с постоянными трудностями по мониторингу нагрузки за GPU, решено было добавить мониторинг Bash-скриптом `gpu_test.sh` который собирает информацию о состоянии графических процессоров (GPU) с использованием утилиты nvidia-smi и записывает данные в формате Prometheus. Метрики включают использование GPU, потребление памяти, температуру и использование памяти отдельными процессами.
 [`gpu_test.sh`
 ](https://github.com/hek1412/monitoring_grafana/tree/main/script#%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%B1%D0%BE%D1%80%D0%B0-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-gpu-%D0%B8-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%BE%D0%B2-gpu_testsh)
+
+Импортируем дашборд:
+
+```
+grafana/Monitiring_GPU.json
+```
+
 Не забываем добавить в sudo crontab -e
 ```
 */5 * * * * /home/vitaliyaleks/monitoring/script/gpu_test.sh >> /home/vitaliyaleks/cron.log 2>&1
@@ -348,11 +354,21 @@ grafana/PostgresQL_information.json
 
 http://skayfaks.keenetic.pro:35100/d/bee2c3g6nhnggb/ispol-zovanie-gpu?orgId=1&from=now-1h&to=now&timezone=browser&refresh=1m
 
-Получился еще один дашборд)
+Получился еще одна важная визуализация)
  ![image](https://github.com/user-attachments/assets/75b3aa8f-b1fb-4a82-8003-da4251450fa2)
 
-Так же импортировал дашборд cAdvisor с основной информацией по Docker
+---
+
+## cAdvisor
+
+Так же импортировал готовый дашборд cAdvisor с основной информацией по Docker
 ![image](https://github.com/user-attachments/assets/cb1f8010-09c0-43d2-95c5-7455c0ff4892)
+
+Импортируем дашборд:
+
+```
+grafana/cAdvisor_Docker.json
+```
 
 Все дашборды по http://skayfaks.keenetic.pro:35100/dashboards
 
