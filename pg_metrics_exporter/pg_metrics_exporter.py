@@ -2,11 +2,11 @@ import os
 import psycopg2
 
 # Настройки подключения к PostgreSQL
-DB_HOST = os.getenv("DB_HOST", "postgrestest")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_NAME = os.getenv("DB_NAME", "postgres_db")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "postgres")
+DB_HOST = os.getenv("POSTGRES_HOST")
+DB_PORT = os.getenv("POSTGRES_PORT", "5432")
+DB_NAME = os.getenv("POSTGRES_DB")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
 
 # Путь к файлу для записи метрик
 METRICS_FILE = "/metrics/pg_metrics.prom"
