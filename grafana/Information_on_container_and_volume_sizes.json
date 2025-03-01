@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 20,
+  "id": 8,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fecrih6s7ot1ca"
+        "uid": "beejsbkg9p5a8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -102,7 +102,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fecrih6s7ot1ca"
+        "uid": "beejsbkg9p5a8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -180,7 +180,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "fecrih6s7ot1ca"
+        "uid": "beejsbkg9p5a8b"
       },
       "fieldConfig": {
         "defaults": {
@@ -266,13 +266,13 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Сведения о размерах контейнеров и томов",
-  "uid": "aedxfkzowsyyoa",
-  "version": 4,
+  "uid": "eeek10yeox6o0c",
+  "version": 2,
   "weekStart": ""
 }

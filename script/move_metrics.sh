@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Исходная директория (где находятся файлы)
-SOURCE_DIR="/home/vitaliyaleks/test1/metrics/"
+SOURCE_DIR="/home/vitaliyaleks/monitoring/metrics/"
 
 # Целевая директория (куда нужно перенести файлы)
 TARGET_DIR="/var/lib/node_exporter"
