@@ -1,15 +1,31 @@
 # ДЗ2. Мониторинг в Grafana сервисов JupyterHub и PosgresQL (+алерты)
 
 В рамках выполнения домашнего задания будут развернуты необходимые сервисы, созданы скрипты и настроены дашборды в Grafana для отображения информации:
-
 - О активности пользователей в JupyterHub
 - Сведения о потреблении ресурсов тетрадей ноутбука
 - Сведения о топовых таблицах в PostgreSQL с их владельцами
-
-### Созданние и настройка алертов
-
+Созданние и настройка алертов
 - Алерт оповещающий при заходе пользователя на сервер по SSH на почту.
 - Алерт оповещающий при превышении общей мощности контейнеров более чем на 80%.
+
+---
+## Описание проекта
+
+Проект предоставляет инструменты для мониторинга PostgreSQL, JupyterHub и системных метрик сервера. Он включает следующие компоненты:
+
+- **PostgreSQL**: База данных для хранения данных.
+- **Prometheus**: Система сбора метрик.
+- **Grafana**: Инструмент визуализации метрик.
+- **cAdvisor**: Мониторинг ресурсов Docker-контейнеров.
+- **Node Exporter**: Сбор системных метрик хоста.
+- **Alertmanager**: Управление оповещениями.
+- **Jupyterhub**: Управление тетрадками пользователей.
+
+
+Учитывая что Jupyterhub у нас уже был создан в рамках выполнения другого задания, описывать процесс его развертывания не буду.
+[Jupyterhub](https://github.com/hek1412/JupyterHub?tab=readme-ov-file#jupyterhub--postgresql-%D1%81-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D1%8C%D1%8E-docker-compose)
+
+В данном проекте, я ипользовал другой созданный мной jupyterhub_v1 с поддержкой графического процессора через среду выполнения NVIDIA, аутентификацией пользователей через GitHub OAuth (для перехода в репозиторий кликаем по по ссылке [Jupyterhub_v1](https://github.com/hek1412/JupyterHub_v1?tab=readme-ov-file#jupyterhub_v1))
 
 ---
 
@@ -48,16 +64,9 @@ Grafana/
 
 ```
 
-Учитывая что юпитер хаб у нас уже был создан в рамках выполнения другого задания, описывать его не буду.
-Но в данном проекте, для большей наглядности, я ипользовал другой созданный jupyterhub (для прочтения описания переходим по ссылке `https://github.com/hek1412/JupyterHub_v1/edit/main/README.md#jupyterhub_v1`)
-
----
-
----
-
 ## Запуск сервисов
 
-Мой `docker compose` включает в себя сервисы:
+Мой `docker compose` включает в себя сервисы с параметрами:
 
 ```
 services:
@@ -66,9 +75,9 @@ services:
     image: postgres:17.2-bookworm
     container_name: postgrestest
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD} 
+      POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /var/lib/postgresql/data/
     ports:
       - "5434:5432"
@@ -81,6 +90,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
+      - monitoring-network
       - jupyterhub-network
 
   pg_metrics_exporter:
@@ -93,16 +103,17 @@ services:
     environment:
       POSTGRES_HOST: postgrestest
       POSTGRES_PORT: 5432
-      POSTGRES_DB: postgres_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - postgrestest
+    restart: unless-stopped
     networks:
-      - jupyterhub-network 
+      - monitoring-network
 
   prometheus:
-    image: prom/prometheus:latest #v3.1.0
+    image: prom/prometheus:v3.1.0
     container_name: prometheustest
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -112,49 +123,52 @@ services:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
       - "35101:9090"
+    restart: unless-stopped
     networks:
+      - monitoring-network
       - jupyterhub-network
     
   grafana:
-    image: grafana/grafana-enterprise:latest #11.5.1
+    image: grafana/grafana-enterprise:11.5.1
     container_name: grafanatest
     ports:
       - "35100:3000"
     networks:
-      - jupyterhub-network
+      - monitoring-network
     volumes:
       - grafana-datatest:/var/lib/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_AUTH_ANONYMOUS_ENABLED=true
+    restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest #v0.49.2
+    image: gcr.io/cadvisor/cadvisor:v0.49.2
     container_name: cadvisortest
     ports:
-      - "35008:8080"
+      - "8080:8080"
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:rw
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
-      - jupyterhub-network
+      - monitoring-network
     restart: unless-stopped
   
   node-exporter:
-    image: prom/node-exporter:v1.5.0 #latest #v1.8.2
+    image: prom/node-exporter:v1.5.0 
     container_name: node-exportertest
     ports:
       - "35102:9100"
     networks:
-      - jupyterhub-network
+      - monitoring-network
     volumes:
       - /var/lib/node_exporter:/app/metrics:ro
     command:
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-      # - '--collector.textfile.directory=/var/lib/node_exporter'
       - '--collector.textfile.directory=/app/metrics'
+    restart: unless-stopped
 
   alertmanager:
     image: prom/alertmanager:v0.28.0
@@ -164,21 +178,25 @@ services:
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
     ports:
-      - "35007:9093"
+      - "9093:9093"
     networks:
-      - jupyterhub-network
-
+      - monitoring-network
+    restart: unless-stopped
+    
 volumes:
   postgres-datatest:
   grafana-datatest:
   prometheus-datatest:
 
 networks:
+  monitoring-network:
+    name: monitoring-network
   jupyterhub-network:
     name: jupyterhub-network
+    external: true
 ```
 
-Перейдим в директорию с проектом и запускаем сервисы:
+Переходим в директорию с проектом создаем образы и запускаем контейнеры сервисов:
 
 ```
 docker compose up --build -d
@@ -207,16 +225,14 @@ http://skayfaks.keenetic.pro:35100/
 
 ### 1. Сведения о контейнерах JupyterHub
 
-Импортируйте дашборд:
+Импортируем дашборд:
 
 ```
-grafana/JupyterHub сведения о контейнерах 2.json
+grafana/JupyterHub.json
 ```
 
-Ссылка на дашборд:
-```
-http://skayfaks.keenetic.pro:35100/d/bedxa8g8anqiof/jupyterhub-svedenija-o-kontejnerah-2?orgId=1&from=now-15m&to=now&timezone=browser&refresh=1m
-```
+Ссылка на публичный дашборд: http://skayfaks.keenetic.pro:35100/d/bedxa8g8anqiof/jupyterhub-svedenija-o-kontejnerah-2?orgId=1&from=now-15m&to=now&timezone=browser&refresh=1m
+
 Пока у нас запушенных контейнеров пользователей нет, проверим это например в панели юпитер хаба
 
 ![image](https://github.com/user-attachments/assets/8ebba85f-379d-4ed3-bcbb-e32232782d6a)
@@ -237,41 +253,37 @@ http://skayfaks.keenetic.pro:35100/d/bedxa8g8anqiof/jupyterhub-svedenija-o-konte
 Импортируем дашборд:
 
 ```
-grafana/Сведения о размерах контейнеров и томов.json
+grafana/Information_on_container_and_volume_sizes.json
 ```
 
-Ссылка на дашборд:
-```
+Ссылка на публичный дашборд:
 http://skayfaks.keenetic.pro:35100/d/aedxfkzowsyyoa/svedenija-o-razmerah-kontejnerov-i-tomov?orgId=1&from=now-6h&to=now&timezone=browser
-```
 
 Используем написанный скрипт
 `script/sum_container_sizes.sh`
 [Ссылка на README в script](script/README.md)
 
 с его помощью получаем полные размеры всех контейнеров и не только юпитера 
-![image](https://github.com/user-attachments/assets/03ed3408-d57f-48a5-b822-cd58b1f19106)
+![image](https://github.com/user-attachments/assets/63654216-614e-4d1f-936c-6a7f1d04adbf)
 
-если нужно только спедения по юпитеру то используем другой дашборд (теперь сразу видно кто сжирает все место на серваке)
-![image](https://github.com/user-attachments/assets/e611db6f-36d8-4c4c-9aed-ca7f44f8628f)
+если нужно только сведения по юпитеру то смотрим в другую панель (теперь сразу видно кто сжирает все место на серваке)
+![image](https://github.com/user-attachments/assets/eb85976d-35aa-4546-a06c-d7cfbc090bc2)
 
 Так же добавил отображения размера томов контейнеров)
-![image](https://github.com/user-attachments/assets/ad421893-713c-4807-a6e4-cedffd83fc98)
+![image](https://github.com/user-attachments/assets/473e1c36-2343-46ae-bcb6-6a6af0a6e438)
+
 
 
 ### 3. Сведения о PostgreSQL
 
-Следующий этап, это PosgresQL и получение сведений о таблицах с их владельцами.
-Импортируйте дашборд:
+Следующий этап, это PosgreSQL и получение сведений о таблицах с их владельцами.
+Импортируем дашборд:
 
 ```
-grafana/Сведения PostgresQL.json
+grafana/PostgresQL_information.json
 ```
 
-Ссылка на дашборд:
-```
-http://skayfaks.keenetic.pro:35100/d/eedyi3fmm718gc/svedenija-postgresql?orgId=1&from=now-6h&to=now&timezone=browser
-```
+Ссылка на публичный дашборд: http://skayfaks.keenetic.pro:35100/d/eedyi3fmm718gc/svedenija-postgresql?orgId=1&from=now-6h&to=now&timezone=browser
 
 С этой задачей справляется скрипт `pg_metrics_exporter.py` который запускается в контейнере `pg_metrics_exporter` каждые 10 минут.
 Так же как и получение сведений о размерах контейнеров и томов, этот скрипт выводит все метрики в директорию с метриками в файл `pg_metrics.prom` и далее они копируются в `/var/lib/node_exporter` скриптом `move_metrics.sh`.
@@ -279,23 +291,21 @@ http://skayfaks.keenetic.pro:35100/d/eedyi3fmm718gc/svedenija-postgresql?orgId=1
 
 Теперь у нас отражается общий размер БД и размеры таблиц:
 
-![image](https://github.com/user-attachments/assets/a3acd668-82f3-4414-b963-552621808a95)
+![image](https://github.com/user-attachments/assets/cbe4f5ab-d559-4c69-885a-3b209c616b69)
 
-Так же в дашборд добавлены метрики отображающие информацию по количеству сканирований таблиц и прочитанных строк которые были прочитаны, что может влиять на нагрузку и возможно запросы необходимо оптимизировать. 
+
+Так же в дашборд добавлены метрики отображающие информацию по количеству сканирований таблиц и общее колическло прочитанных строк которые были обработаны при выполнении запросов, которые могут нам понадобиться для анализа работы с БД. 
 
 ---
 
 ## Алерты
 
-### Проверка алертов в Prometheus
+### Настройка алертов в Prometheus
 
 Теперь переходим к алертам.
 Первый алерт отслеживает контейнеры у которых использование CPU более 80 %, второй отслеживает вход на сервер пользователей по SSH.
-Переходим в веб интерфейс Prometheus, вкладку алертов, убеждаемся, что они неактивны и зеленые:
+Переходим в веб интерфейс Prometheus, вкладку алертов, убеждаемся, что они неактивны и зеленые: http://skayfaks.keenetic.pro:35101/alerts
 
-```
-http://skayfaks.keenetic.pro:35101/alerts
-```
 ![image](https://github.com/user-attachments/assets/622c9479-df48-4da5-ba8c-70d399d4f334)
 
 
@@ -339,7 +349,6 @@ http://skayfaks.keenetic.pro:35101/alerts
 */15 * * * * /home/vitaliyaleks/test1/script/sum_container_sizes.sh >> /home/vitaliyaleks/cron.log 2>&1
 ```
 
----
 
 
 
