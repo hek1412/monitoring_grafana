@@ -201,7 +201,7 @@ networks:
 ```
 docker compose up --build -d
 ```
-![image](https://github.com/user-attachments/assets/9989da70-518a-4dc4-9bb8-eb60a8e05ad1)
+![image](https://github.com/user-attachments/assets/a67c1e60-e489-4a61-9969-4d01cfc88b44)
 
 
 ### Настройка источника данных в Grafana
@@ -212,12 +212,9 @@ docker compose up --build -d
 http://skayfaks.keenetic.pro:35100/
 ```
 
-Выберите источник данных Prometheus, используя полученный IP-адрес `http://prometheustest` и порт `9090`.
+Выберите источник данных Prometheus, используя полученный IP-адрес `http://prometheustest` и порт `9090`? нажимаем тест.
 
-![image](https://github.com/user-attachments/assets/a593b693-cbda-4760-b8ce-c70e438a2acc)
-
-![image](https://github.com/user-attachments/assets/416d26eb-b066-449b-b8d0-6bf34a988b59)
-
+![image](https://github.com/user-attachments/assets/70ec9228-1be6-4658-916c-758db0a96098)
 
 ---
 
@@ -233,22 +230,15 @@ grafana/JupyterHub.json
 
 Ссылка на публичный дашборд: http://skayfaks.keenetic.pro:35100/d/bedxa8g8anqiof/jupyterhub-svedenija-o-kontejnerah-2?orgId=1&from=now-15m&to=now&timezone=browser&refresh=1m
 
-Пока у нас запушенных контейнеров пользователей нет, проверим это например в панели юпитер хаба
+Теперь благодаря этого дашборда мы можем в графане отслеживать активность пользователей JupyterHub, анализировать использования CPU и размер файловой системы.
 
-![image](https://github.com/user-attachments/assets/8ebba85f-379d-4ed3-bcbb-e32232782d6a)
+![image](https://github.com/user-attachments/assets/4f9a88ff-2f94-4a60-80c2-be0a29a0d54f)
 
-Теперь запустим 3 сервера
-![image](https://github.com/user-attachments/assets/a9d7e787-4695-4b26-a8ea-7b63f0701270)
-
-Возвращаемся в графану и анализируем полученные результаты)
-![image](https://github.com/user-attachments/assets/4d64bb49-91df-4565-9642-84dde9a78d4b)
-
-
-Получили первый дашборд, отлично, но мне не понравилось что юпитер хаб не дает реальный размер контейнеров с учетом слоев образа.
+Получили первый дашборд, отлично, но мне не понравилось что юпитер хаб не дает метрики по реальному размеру контейнеров с учетом слоев образа.
 
 ### 2. Размеры контейнеров и томов
 
-Используем скрипт для получения полных размеров контейнеров `script/sum_container_sizes.sh`
+Для реализации этого используем скрипт для получения полных размеров контейнеров `script/sum_container_sizes.sh`
 
 Импортируем дашборд:
 
@@ -291,7 +281,8 @@ grafana/PostgresQL_information.json
 
 Теперь у нас отражается общий размер БД и размеры таблиц:
 
-![image](https://github.com/user-attachments/assets/cbe4f5ab-d559-4c69-885a-3b209c616b69)
+![image](https://github.com/user-attachments/assets/16332c0b-943d-4d36-8a94-1abb0bedf211)
+
 
 
 Так же в дашборд добавлены метрики отображающие информацию по количеству сканирований таблиц и общее колическло прочитанных строк которые были обработаны при выполнении запросов, которые могут нам понадобиться для анализа работы с БД. 
@@ -306,34 +297,30 @@ grafana/PostgresQL_information.json
 Первый алерт отслеживает контейнеры у которых использование CPU более 80 %, второй отслеживает вход на сервер пользователей по SSH.
 Переходим в веб интерфейс Prometheus, вкладку алертов, убеждаемся, что они неактивны и зеленые: http://skayfaks.keenetic.pro:35101/alerts
 
-![image](https://github.com/user-attachments/assets/622c9479-df48-4da5-ba8c-70d399d4f334)
+![image](https://github.com/user-attachments/assets/c12177f7-24fe-4ce5-bff4-0c96567dc6f0)
 
 
 #### Алерт 1: Использование CPU более 80%
 
-Даем нагрузку на процессор например через блокнот Jupyter`jupyter-yurecc197` запустив скрипт на работу с языковой моделью:
-
-![image](https://github.com/user-attachments/assets/577c55d4-f573-44ae-96ff-2366df989a88)
-
+Даем нагрузку на процессор? например через блокнот Jupyter `jupyter-yurecc197` запустив скрипт на работу с языковой моделью:
 Проверяем активацию алерта.
-![image](https://github.com/user-attachments/assets/289e1917-6eac-4e3b-96a1-34c92cb63783)
+
+![image](https://github.com/user-attachments/assets/09984c9b-3a23-4905-b571-bf99d6fc245b)
 
 Получаем уведомление
-![image](https://github.com/user-attachments/assets/785ab5cc-c298-4f91-9c98-51f5ea065831)
+![image](https://github.com/user-attachments/assets/2fcc888e-908b-428a-bcd5-e7d2ea126e82)
 
 #### Алерт 2: Вход пользователей по SSH
 
 Для отслеживания входа пользователей по SSH используем скрипт `script/ssh_monitor.sh`
 который считывает логи `/var/log/auth.log` и выводит в файл `/var/lib/node_exporter/ssh_login_metrics.prom` который монтируется в экспортер.
 
-Добавил в дашборд метрику по SSH для наглядности
-![image](https://github.com/user-attachments/assets/8d72f0cb-b7f1-43b8-a65a-781041bca082)
+Теперь входим по SSH и ждем когда скрипт запишет метрики)
+![image](https://github.com/user-attachments/assets/0c11c746-d27f-450b-8caf-2c014be3637b)
 
-теперь входим по SSH и ждем получения уведомления)
-![image](https://github.com/user-attachments/assets/1dda5dc3-e5cb-4d72-b99e-7c255125a4e5)
+Получаем уведомление! Теперь никто не пройдет не замеченным)))
+![image](https://github.com/user-attachments/assets/0017e910-d72d-4ae5-95dc-b77eab73688e)
 
-Теперь никто не пройдет не замеченным)))
-![image](https://github.com/user-attachments/assets/6c7f5d38-345e-4186-abb7-dc02d537952b)
 
 ---
 
@@ -341,12 +328,12 @@ grafana/PostgresQL_information.json
 
 При написании скриптов необходимо обязательно дать разрешения на запись в соответствующие директории и сделать скрипты исполняемыми для использования в cron. 
 
-Добавляем эти строчки в `crontab -e` и направляем вывод логов в отдельный файл для чтения логов и понимания почему метрики не обновляются)
+Добавляем эти строчки в `sudo crontab -e` и направим вывод логов в отдельный файл для записи логов.
 
 ```
-*/6 * * * * /home/vitaliyaleks/test1/script/move_metrics.sh >> /home/vitaliyaleks/cron.log 2>&1
-*/5 * * * * /home/vitaliyaleks/test1/script/ssh_monitor.sh >> /home/vitaliyaleks/cron.log 2>&1
-*/15 * * * * /home/vitaliyaleks/test1/script/sum_container_sizes.sh >> /home/vitaliyaleks/cron.log 2>&1
+*/6 * * * * /home/vitaliyaleks/monitoring/script/move_metrics.sh >> /home/vitaliyaleks/cron.log 2>&1
+*/1 * * * * /home/vitaliyaleks/monitoring/script/ssh_monitor.sh >> /home/vitaliyaleks/cron.log 2>&1
+*/15 * * * * /home/vitaliyaleks/monitoring/script/sum_container_sizes.sh >> /home/vitaliyaleks/cron.log 2>&1
 ```
 
 
