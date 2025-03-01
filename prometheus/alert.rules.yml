@@ -1,0 +1,44 @@
+groups:
+  - name: ssh
+    rules:
+      - alert: SSHLoginAlert
+        expr: changes(ssh_login_attempt_info[5m]) > 0 #  increase(ssh_login_attempt_info[2m]) > 0
+        for: 0m
+        labels:
+          severity: info
+        annotations:
+          summary: "SSH вход"
+          subject: "Внимание! вход {{ $labels.username }}"
+          description: "Пользователь {{ $labels.username }} выполнил вход с ip {{ $labels.ip }}."
+ 
+  - name: CPU 
+    rules:
+      - alert: HighCpuLoad
+        expr: sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) by (name) * 100 > 80
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU load"
+          subject: "Внимание! нагрузка на CPU"
+          description: "CPU нагрузка {{ $labels.name }} составляет {{ $value }}% и превышает пороговое значение (80%) в течение более 5 минут."
+     
+      # - alert: high_load
+      #   expr: node_load1 > 0.5
+      #   for: 2m
+      #   labels:
+      #     severity: page
+      #   annotations:
+      #     summary: "Instance {{ $labels.instance }} under high load"
+      #     description: "{{ $labels.instance }} of job {{ $labels.job }} is under high load."  
+  # - name: CPU1
+  #   rules:
+  #     - alert: HighCpuLoad1
+  #       expr: (100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+  #       for: 5m
+  #       labels:
+  #         severity: warning
+  #       annotations:
+  #         summary: "High CPU load"
+  #         subject: "Внимание! нагрузка на CPU"
+  #         description: "CPU нагрузка превышает пороговое значение (80%) в течение более 5 минут."

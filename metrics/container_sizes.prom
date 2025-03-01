@@ -1,0 +1,29 @@
+# HELP container_disk_usage_bytes Total disk usage of Docker containers in MB
+# TYPE container_disk_usage_bytes gauge
+container_disk_usage_bytes{container="jupyter-admin"} 10240.00
+container_disk_usage_bytes{container="pg_metrics_exportertest"} 143.00
+container_disk_usage_bytes{container="postgrestest"} 435.00
+container_disk_usage_bytes{container="prometheustest"} 295.00
+container_disk_usage_bytes{container="grafanatest"} 568.00
+container_disk_usage_bytes{container="alertmanagertest"} 72.30
+container_disk_usage_bytes{container="cadvisortest"} 80.80
+container_disk_usage_bytes{container="node-exportertest"} 22.50
+container_disk_usage_bytes{container="lmstudio"} 16916.48
+container_disk_usage_bytes{container="jupyterhub_v2"} 419.00
+container_disk_usage_bytes{container="jupyter-hek1412"} 10343.00
+container_disk_usage_bytes{container="jupyter-mamonttspb"} 24002.56
+container_disk_usage_bytes{container="jupyterhub"} 423.00
+container_disk_usage_bytes{container="ollama-open-webui-pipelines"} 3282.96
+container_disk_usage_bytes{container="my-ollamaui-langfuse_v3-langfuse-web-1"} 830.00
+container_disk_usage_bytes{container="my-ollamaui-langfuse_v3-langfuse-worker-1"} 1239.04
+container_disk_usage_bytes{container="ollama-open-webui"} 4650.00
+container_disk_usage_bytes{container="langfuse-redis"} 117.00
+container_disk_usage_bytes{container="langfuse-clickhouse"} 666.00
+container_disk_usage_bytes{container="ollama"} 3348.48
+container_disk_usage_bytes{container="langfuse-postgres"} 435.00
+container_disk_usage_bytes{container="langfuse-minio"} 180.00
+container_disk_usage_bytes{container="qdrant"} 826.00
+container_disk_usage_bytes{container="n8n-n8n-1"} 808.70
+container_disk_usage_bytes{container="milvus-standalone"} 1751.04
+container_disk_usage_bytes{container="milvus-minio"} 252.00
+container_disk_usage_bytes{container="milvus-etcd"} 59.00

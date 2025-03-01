@@ -1,0 +1,14 @@
+# Используем базовый образ Python
+FROM python:3.9-slim
+
+# Устанавливаем зависимости
+RUN pip install psycopg2-binary
+
+# Копируем скрипт
+COPY pg_metrics_exporter.py /app/pg_metrics_exporter.py
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Команда для запуска скрипта в бесконечном цикле
+CMD ["sh", "-c", "while true; do python pg_metrics_exporter.py; sleep 600; done"]

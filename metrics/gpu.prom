@@ -1,0 +1,22 @@
+# HELP gpu_utilization GPU utilization percentage
+# TYPE gpu_utilization gauge
+gpu_utilization 0
+
+# HELP gpu_memory_used GPU memory used in MiB
+# TYPE gpu_memory_used gauge
+gpu_memory_used 8815
+
+# HELP gpu_memory_total Total GPU memory in MiB
+# TYPE gpu_memory_total gauge
+gpu_memory_total 12288
+
+# HELP gpu_temperature GPU temperature in Celsius
+# TYPE gpu_temperature gauge
+gpu_temperature 29
+
+# HELP gpu_process_memory_usage GPU memory usage by process in MiB
+# TYPE gpu_process_memory_usage gauge
+gpu_process_memory_usage{pid="4739", process_name="./qdrant"} 27
+gpu_process_memory_usage{pid="9105", process_name="/root/.cache/lm-studio/.internal/utils/node"} 102
+gpu_process_memory_usage{pid="10478", process_name="/root/.cache/lm-studio/.internal/utils/node"} 7968
+gpu_process_memory_usage{pid="686268", process_name="/home/jovyan/work/env/bin/python"} 612
