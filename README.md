@@ -238,7 +238,7 @@ grafana/JupyterHub.json
 
 ### 2. Размеры контейнеров и томов
 
-Для реализации этого используем скрипт для получения полных размеров контейнеров `script/sum_container_sizes.sh`
+Для реализации этого используем скрипт для получения полных размеров контейнеров [`script/sum_container_sizes.sh`](https://github.com/hek1412/monitoring_grafana/tree/main/script#%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%B1%D0%BE%D1%80%D0%B0-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-%D0%B4%D0%B8%D1%81%D0%BA%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D1%80%D0%B0%D0%BD%D1%81%D1%82%D0%B2%D0%B0-docker-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%B9%D0%BD%D0%B5%D1%80%D0%BE%D0%B2-%D0%B8-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2-sum_container_sizessh)
 
 Импортируем дашборд:
 
@@ -312,7 +312,7 @@ grafana/PostgresQL_information.json
 
 #### Алерт 2: Вход пользователей по SSH
 
-Для отслеживания входа пользователей по SSH используем скрипт `script/ssh_monitor.sh`
+Для отслеживания входа пользователей по SSH используем скрипт [`script/ssh_monitor.sh`](https://github.com/hek1412/monitoring_grafana/tree/main/script#%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%B1%D0%BE%D1%80%D0%B0-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D0%BF%D0%BE%D0%BF%D1%8B%D1%82%D0%BE%D0%BA-%D0%B2%D1%85%D0%BE%D0%B4%D0%B0-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-ssh-ssh_monitorsh)
 который считывает логи `/var/log/auth.log` и выводит в файл `/var/lib/node_exporter/ssh_login_metrics.prom` который монтируется в экспортер.
 
 Теперь входим по SSH и ждем когда скрипт запишет метрики)
@@ -336,12 +336,24 @@ grafana/PostgresQL_information.json
 */15 * * * * /home/vitaliyaleks/monitoring/script/sum_container_sizes.sh >> /home/vitaliyaleks/cron.log 2>&1
 ```
 
+## Monitirinr_GPU
+В связи с постоянными трудностями по мониторингу нагрузки за GPU, решено было добавить мониторинг Bash-скриптом `gpu_test.sh` который собирает информацию о состоянии графических процессоров (GPU) с использованием утилиты nvidia-smi и записывает данные в формате Prometheus. Метрики включают использование GPU, потребление памяти, температуру и использование памяти отдельными процессами.
+[`gpu_test.sh`
+](https://github.com/hek1412/monitoring_grafana/tree/main/script#%D1%81%D0%BA%D1%80%D0%B8%D0%BF%D1%82-%D0%B4%D0%BB%D1%8F-%D1%81%D0%B1%D0%BE%D1%80%D0%B0-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F-gpu-%D0%B8-%D0%BF%D1%80%D0%BE%D1%86%D0%B5%D1%81%D1%81%D0%BE%D0%B2-gpu_testsh)
+Не забываем добавить в sudo crontab -e
+```
+*/5 * * * * /home/vitaliyaleks/monitoring/script/gpu_test.sh >> /home/vitaliyaleks/cron.log 2>&1
+```
 
+http://skayfaks.keenetic.pro:35100/d/bee2c3g6nhnggb/ispol-zovanie-gpu?orgId=1&from=now-1h&to=now&timezone=browser&refresh=1m
 
+Получился еще один дашборд)
+ ![image](https://github.com/user-attachments/assets/75b3aa8f-b1fb-4a82-8003-da4251450fa2)
 
+Так же импортировал дашборд cAdvisor с основной информацией по Docker
+![image](https://github.com/user-attachments/assets/cb1f8010-09c0-43d2-95c5-7455c0ff4892)
 
- 
-
+Все дашборды по http://skayfaks.keenetic.pro:35100/dashboards
 
 
  
