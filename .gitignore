@@ -1,3 +1,4 @@
 # Игнорировать файлы
 .env
 alertmanager/.env
+metrics/
