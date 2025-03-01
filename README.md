@@ -267,6 +267,7 @@ http://skayfaks.keenetic.pro:35100/d/aedxfkzowsyyoa/svedenija-o-razmerah-kontejn
 ### 3. Сведения о PostgreSQL
 
 Следующий этап, это PosgreSQL и получение сведений о таблицах с их владельцами.
+для получения метрик используем созданный [`pg_metrics_exporter.py`](https://github.com/hek1412/monitoring_grafana/tree/main/pg_metrics_exporter#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D1%81%D0%B5%D1%80%D0%B2%D0%B8%D1%81%D0%B0-%D0%B4%D0%BB%D1%8F-%D1%8D%D0%BA%D1%81%D0%BF%D0%BE%D1%80%D1%82%D0%B0-%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D0%BA-postgresql) завернутый в контейнер и в бесконечный цикл.
 Импортируем дашборд:
 
 ```
