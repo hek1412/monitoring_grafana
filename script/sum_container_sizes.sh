@@ -3,8 +3,8 @@
 # Создаем директорию metrics, если её нет
 mkdir -p metrics
 # Файлы для вывода метрик
-container_output_file="/home/vitaliyaleks/test1/metrics/container_sizes.prom"
-image_output_file="/home/vitaliyaleks/test1/metrics/image_sizes.prom"
+container_output_file="/home/vitaliyaleks/monitoring/metrics/container_sizes.prom"
+image_output_file="/home/vitaliyaleks/monitoring/metrics/image_sizes.prom"
 
 # Очистка файлов перед записью
 > "$container_output_file"
