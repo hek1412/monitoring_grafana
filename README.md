@@ -4,9 +4,8 @@
 - О активности пользователей в JupyterHub
 - Сведения о потреблении ресурсов тетрадей ноутбука
 - Сведения о топовых таблицах в PostgreSQL с их владельцами
-Созданние и настройка алертов:
-- оповещающий при заходе пользователя на сервер по SSH на почту.
-- оповещающий при превышении общей мощности контейнеров более чем на 80%.
+- алерт оповещающий при заходе пользователя на сервер по SSH на почту.
+- алерт оповещающий при превышении общей мощности контейнеров более чем на 80%.
 
 ---
 ## Описание проекта
@@ -34,14 +33,16 @@ Grafana/
 │
 ├── docker-compose.yaml 
 │
+├──.env
+│
 ├── prometheus/ Каталог с конфигурацией Prometheus.
 │   ├── prometheus.yml
 │   └── alert.rules.yml
 │
 ├── grafana/ Каталог для Grafana
-│   ├── JupyterHub сведения о контейнерах 2.json
-│   ├── Сведения о размерах контейнеров и томов.json
-│   └── Сведения PostgresQL.json
+│   ├── JupyterHub.json
+│   ├── Information_on_container_and_volume_sizes.json
+│   └── PostgresQL_information.json
 │
 ├── alertmanager/ Каталог с конфигурацией Alertmanager.
 │   └── alertmanager.yml
@@ -301,8 +302,8 @@ grafana/PostgresQL_information.json
 
 #### Алерт 1: Использование CPU более 80%
 
-Даем нагрузку на процессор? например через блокнот Jupyter `jupyter-yurecc197` запустив скрипт на работу с языковой моделью:
-Проверяем активацию алерта.
+Даем нагрузку на процессор, например через блокнот Jupyter `jupyter-yurecc197` запустив скрипт на работу с языковой моделью:
+Проверяем активацию алерта. (sum (rate(container_cpu_usage_seconds_total{name=~".+"}[5m]))* 100 > 80)
 
 ![image](https://github.com/user-attachments/assets/09984c9b-3a23-4905-b571-bf99d6fc245b)
 
