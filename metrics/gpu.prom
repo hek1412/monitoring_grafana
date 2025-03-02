@@ -1,6 +1,6 @@
 # HELP gpu_utilization GPU utilization percentage
 # TYPE gpu_utilization gauge
-gpu_utilization 93
+gpu_utilization 100
 
 # HELP gpu_memory_used GPU memory used in MiB
 # TYPE gpu_memory_used gauge
