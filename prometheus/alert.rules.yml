@@ -14,14 +14,14 @@ groups:
   - name: CPU 
     rules:
       - alert: HighCpuLoad
-        expr: sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) by (name) * 100 > 80
-        for: 3m
+        expr: sum (rate(container_cpu_usage_seconds_total{name=~".+"}[5m]))* 100 > 80
+        for: 5m
         labels:
           severity: warning
         annotations:
           summary: "High CPU load"
           subject: "Внимание! нагрузка на CPU"
-          description: "CPU нагрузка {{ $labels.name }} составляет {{ $value }}% и превышает пороговое значение (80%) в течение более 5 минут."
+          description: "CPU нагрузка составляет {{ $value }}% и превышает пороговое значение (80%) в течение более 5 минут."
 
   # - name: test_alerts
   #   rules:
