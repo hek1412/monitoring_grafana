@@ -297,18 +297,19 @@ grafana/PostgresQL_information.json
 Первый алерт отслеживает контейнеры у которых использование CPU более 80 %, второй отслеживает вход на сервер пользователей по SSH.
 Переходим в веб интерфейс Prometheus, вкладку алертов, убеждаемся, что они неактивны и зеленые: http://skayfaks.keenetic.pro:35101/alerts
 
-![image](https://github.com/user-attachments/assets/c12177f7-24fe-4ce5-bff4-0c96567dc6f0)
+![image](https://github.com/user-attachments/assets/0f9e69da-4666-4676-ae48-97f2b7f377b0)
 
 
 #### Алерт 1: Использование CPU более 80%
 
-Даем нагрузку на процессор, например через блокнот Jupyter `jupyter-yurecc197` запустив скрипт на работу с языковой моделью:
+Даем нагрузку на процессор, например через блокнот Jupyter `jupyter-yurecc197` запустив скрипт:
 Проверяем активацию алерта. (sum (rate(container_cpu_usage_seconds_total{name=~".+"}[5m]))* 100 > 80)
 
-![image](https://github.com/user-attachments/assets/09984c9b-3a23-4905-b571-bf99d6fc245b)
+![image](https://github.com/user-attachments/assets/8e48e29e-3c32-4cbb-b667-85f21f3b2739)
 
-Получаем уведомление
-![image](https://github.com/user-attachments/assets/2fcc888e-908b-428a-bcd5-e7d2ea126e82)
+Получаем соответствующее уведомление
+
+![image](https://github.com/user-attachments/assets/1995ce90-c9e0-4881-a4fe-00a47b3378bf)
 
 #### Алерт 2: Вход пользователей по SSH
 
