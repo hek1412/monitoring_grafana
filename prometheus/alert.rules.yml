@@ -2,7 +2,7 @@ groups:
   - name: ssh
     rules:
       - alert: SSHLoginAlert
-        expr: changes(ssh_login_attempt_info[5m]) > 0 #  increase(ssh_login_attempt_info[2m]) > 0
+        expr:  ssh_login_attempt_info > 0 # changes(ssh_login_attempt_info[5m]) > 0 #  increase(ssh_login_attempt_info[2m]) > 0
         for: 0m
         labels:
           severity: info
