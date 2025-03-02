@@ -1,0 +1,20 @@
+global:
+  smtp_smarthost: 'smtp.yandex.ru:587'  # SMTP-сервер с портом 587 (SSL/TLS)
+  smtp_from: 'test.alertov@yandex.ru'   # Отправитель письма
+  smtp_auth_username: 'test.alertov@yandex.ru'  # Логин (полный email)
+  smtp_auth_password: 'lhsh3399ds9fuhs'       # Пароль необходимо прописывать в файле конфигурации, переменные не поддерживаются 
+ 
+
+route:
+  # group_by: ['alertname']               # Группировать алерты по имени
+  # group_wait: 15s                       # Ждать 15 секунд перед отправкой
+  # group_interval: 5m                    # Отправлять новые группы каждые 5 минут
+  # repeat_interval: 1h                   # Повторять уведомления каждые 1 час
+  receiver: 'email-notifications'
+
+receivers:
+  - name: 'email-notifications'
+    email_configs:
+      - to: 'hek_v@mail.ru'  # Получатель уведомлений
+        headers:
+          Subject: '{{ .CommonAnnotations.summary }}'  # Заголовок письма

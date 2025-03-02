@@ -2,15 +2,15 @@ groups:
   - name: ssh
     rules:
       - alert: SSHLoginAlert
-        expr:  ssh_login_attempt_info > 0 # changes(ssh_login_attempt_info[5m]) > 0 #  increase(ssh_login_attempt_info[2m]) > 0
-        for: 0m
+        expr:  changes(ssh_login_attempt_info[5m]) > 0 #  increase(ssh_login_attempt_info[2m]) > 0
+        for: 1m
         labels:
           severity: info
         annotations:
           summary: "SSH вход"
           subject: "Внимание! вход {{ $labels.username }}"
           description: "Пользователь {{ $labels.username }} выполнил вход с ip {{ $labels.ip }}."
- 
+
   - name: CPU 
     rules:
       - alert: HighCpuLoad
@@ -22,7 +22,17 @@ groups:
           summary: "High CPU load"
           subject: "Внимание! нагрузка на CPU"
           description: "CPU нагрузка {{ $labels.name }} составляет {{ $value }}% и превышает пороговое значение (80%) в течение более 5 минут."
-     
+
+  # - name: test_alerts
+  #   rules:
+  #     - alert: TestAlert
+  #       expr: vector(1)
+  #       for: 1m
+  #       labels:
+  #         severity: critical
+  #       annotations:
+  #         summary: "Тестовый алерт"
+  #         description: "Это тестовое уведомление для проверки работы системы."     
       # - alert: high_load
       #   expr: node_load1 > 0.5
       #   for: 2m
