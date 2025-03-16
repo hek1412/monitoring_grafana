@@ -1,5 +1,14 @@
 # HELP image_disk_usage_bytes Total disk usage of Docker images in MB
 # TYPE image_disk_usage_bytes gauge
+image_disk_usage_bytes{image="webhooks_v1-telegram-bot:latest"} 139.00
+image_disk_usage_bytes{image="jupyterlab-v2:latest"} 17715.20
+image_disk_usage_bytes{image="hek1412/jupyterlab_v2:latest"} 17715.20
+image_disk_usage_bytes{image="jupyterlab-v3:latest"} 13107.20
+image_disk_usage_bytes{image="hek1412/jupyterlab_v3:latest"} 13107.20
+image_disk_usage_bytes{image="webhooks-telegram-bot:latest"} 145.00
+image_disk_usage_bytes{image="autogen-studio-autogen:latest"} 158.00
+image_disk_usage_bytes{image="autogen-studio:latest"} 158.00
+image_disk_usage_bytes{image="monitoring-pg_metrics_exporter:latest"} 143.00
 image_disk_usage_bytes{image="test1-pg_metrics_exporter:latest"} 143.00
 image_disk_usage_bytes{image="lmstudio-lmstudio:latest"} 13619.20
 image_disk_usage_bytes{image="jupyterhub_v2:latest"} 419.00
@@ -7,7 +16,6 @@ image_disk_usage_bytes{image="hek1412/my-jupyter-test:v1"} 10240.00
 image_disk_usage_bytes{image="my-jupyter-test:v1"} 10240.00
 image_disk_usage_bytes{image="jupyterhub:latest"} 423.00
 image_disk_usage_bytes{image="hek1412/dockerfile.jupyterlab_v2:latest"} 10147.84
-image_disk_usage_bytes{image="jupyterlab-v2:latest"} 10147.84
 image_disk_usage_bytes{image="prom/prometheus:latest"} 295.00
 image_disk_usage_bytes{image="ollama/ollama:latest"} 3348.48
 image_disk_usage_bytes{image="n8nio/n8n:latest"} 723.00
@@ -20,10 +28,13 @@ image_disk_usage_bytes{image="minio/minio:latest"} 180.00
 image_disk_usage_bytes{image="clickhouse/clickhouse-server:latest"} 666.00
 image_disk_usage_bytes{image="postgres:17.2-bookworm"} 435.00
 image_disk_usage_bytes{image="postgres:latest"} 435.00
+image_disk_usage_bytes{image="grafana/grafana-enterprise:11.5.1"} 568.00
 image_disk_usage_bytes{image="grafana/grafana-enterprise:latest"} 568.00
 image_disk_usage_bytes{image="milvusdb/milvus:v2.5.4"} 1751.04
 image_disk_usage_bytes{image="prom/alertmanager:v0.28.0"} 72.30
 image_disk_usage_bytes{image="redis:7"} 117.00
+image_disk_usage_bytes{image="prom/prometheus:v3.1.0"} 295.00
+image_disk_usage_bytes{image="gcr.io/cadvisor/cadvisor:v0.49.2"} 80.80
 image_disk_usage_bytes{image="quay.io/coreos/etcd:v3.5.16"} 59.00
 image_disk_usage_bytes{image="gcr.io/cadvisor/cadvisor:latest"} 80.80
 image_disk_usage_bytes{image="minio/minio:RELEASE.2023-03-20T20-16-18Z"} 252.00

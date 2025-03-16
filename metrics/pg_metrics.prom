@@ -13,9 +13,9 @@ pg_database_size_mb{database="template0"} 7
 # TYPE pg_table_seq_scan_total counter
 # HELP pg_table_seq_tup_read_total Total tuples read sequentially
 # TYPE pg_table_seq_tup_read_total counter
-pg_table_seq_scan_total{table_name="table_500", owner="postgres"} 4
-pg_table_seq_tup_read_total{table_name="table_500", owner="postgres"} 1500
-pg_table_seq_scan_total{table_name="table_1000", owner="postgres"} 4
-pg_table_seq_tup_read_total{table_name="table_1000", owner="postgres"} 3000
-pg_table_seq_scan_total{table_name="table_100000", owner="postgres"} 4
-pg_table_seq_tup_read_total{table_name="table_100000", owner="postgres"} 102057
+pg_table_seq_scan_total{table_name="table_500", owner="postgres"} 0
+pg_table_seq_tup_read_total{table_name="table_500", owner="postgres"} 0
+pg_table_seq_scan_total{table_name="table_1000", owner="postgres"} 0
+pg_table_seq_tup_read_total{table_name="table_1000", owner="postgres"} 0
+pg_table_seq_scan_total{table_name="table_100000", owner="postgres"} 0
+pg_table_seq_tup_read_total{table_name="table_100000", owner="postgres"} 0

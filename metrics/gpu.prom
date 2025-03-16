@@ -1,10 +1,10 @@
 # HELP gpu_utilization GPU utilization percentage
 # TYPE gpu_utilization gauge
-gpu_utilization 100
+gpu_utilization 0
 
 # HELP gpu_memory_used GPU memory used in MiB
 # TYPE gpu_memory_used gauge
-gpu_memory_used 8989
+gpu_memory_used 224
 
 # HELP gpu_memory_total Total GPU memory in MiB
 # TYPE gpu_memory_total gauge
@@ -12,11 +12,9 @@ gpu_memory_total 12288
 
 # HELP gpu_temperature GPU temperature in Celsius
 # TYPE gpu_temperature gauge
-gpu_temperature 68
+gpu_temperature 31
 
 # HELP gpu_process_memory_usage GPU memory usage by process in MiB
 # TYPE gpu_process_memory_usage gauge
-gpu_process_memory_usage{pid="5270", process_name="./qdrant"} 27
-gpu_process_memory_usage{pid="1537075", process_name="/root/.cache/lm-studio/.internal/utils/node"} 102
-gpu_process_memory_usage{pid="2915170", process_name="/opt/conda/bin/python"} 8186
-gpu_process_memory_usage{pid="2999972", process_name="/opt/conda/bin/python"} 568
+gpu_process_memory_usage{pid="5646", process_name="./qdrant"} 27
+gpu_process_memory_usage{pid="10577", process_name="/root/.cache/lm-studio/.internal/utils/node"} 102
