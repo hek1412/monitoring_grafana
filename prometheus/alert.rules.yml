@@ -16,15 +16,15 @@ groups:
   - name: CPU
     rules:
       - alert: HighCpuLoad
-        expr: sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) * 100 > 80
-        for: 5m
+        expr: sum(rate(container_cpu_usage_seconds_total{name=~".+"}[5m])) by (name) * 100 > 90
+        for: 60m
         labels:
           severity: warning
-          instance: "{{ $labels.instance }}"  # Метка instance
+          instance: "sever-1T-45"  # Метка instance
           job: "{{ $labels.job }}"  # Метка job (если есть)
         annotations:
           summary: "High CPU load"
-          description: "CPU нагрузка составляет {{ $value }}% и превышает пороговое значение (80%) на инстансе {{ $labels.instance }}."
+          description: "CPU нагрузка {{ $labels.name }} составляет {{ $value }}% и превышает пороговое значение (90%) на инстансе {{ $labels.instance }}."
 # groups:
 #   - name: ssh
 #     rules:

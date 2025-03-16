@@ -1,4 +1,4 @@
 # Игнорировать файлы
 .env
-alertmanager/alertmanager.yml
+# alertmanager/alertmanager.yml
 metrics/

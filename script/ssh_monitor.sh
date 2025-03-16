@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="/var/lib/node_exporter"
+DIR="/deploy/monitoring_grafana/metrics/"
 METRICS_FILE="$DIR/ssh_login_metrics.prom"
 
 # Проверка существования файла логов

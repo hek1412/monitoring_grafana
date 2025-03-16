@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output_file="/home/vitaliyaleks/monitoring/metrics/gpu.prom"
+output_file="/deploy/monitoring_grafana/metrics/gpu.prom"
 > "$output_file"
 
 # Функция для безопасного извлечения значений

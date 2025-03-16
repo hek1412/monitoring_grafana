@@ -1,45 +1,23 @@
 services:
- 
-  postgrestest:
-    image: postgres:17.2-bookworm
-    container_name: postgrestest
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD} 
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /var/lib/postgresql/data/
-    ports:
-      - "5434:5432"
-    volumes:
-      - postgres-datatest:/var/lib/postgresql/data/
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres_db" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - monitoring-network
-      - jupyterhub-network
 
-  pg_metrics_exporter:
-    build:
-      context: ./pg_metrics_exporter
-      dockerfile: Dockerfile.exporter
-    container_name: pg_metrics_exportertest
-    volumes:
-      - ./metrics:/metrics  # Монтируем директорию для метрик
-    environment:
-      POSTGRES_HOST: postgrestest
-      POSTGRES_PORT: 5432
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    depends_on:
-      - postgrestest
-    restart: unless-stopped
-    networks:
-      - monitoring-network
+  # pg_metrics_exporter:
+  #   build:
+  #     context: ./pg_metrics_exporter
+  #     dockerfile: Dockerfile.exporter
+  #   container_name: pg_metrics_exportertest
+  #   volumes:
+  #     - ./metrics:/metrics  # Монтируем директорию для метрик
+  #   environment:
+  #     POSTGRES_HOST: postgrestest
+  #     POSTGRES_PORT: 5432
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #   depends_on:
+  #     - postgrestest
+  #   restart: unless-stopped
+  #   networks:
+  #     - monitoring-network
 
   prometheus:
     image: prom/prometheus:v3.1.0
@@ -51,7 +29,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
     ports:
-      - "35101:9090"
+      - "4512:9090"
     restart: unless-stopped
     networks:
       - monitoring-network
@@ -61,7 +39,7 @@ services:
     image: grafana/grafana-enterprise:11.5.1
     container_name: grafanatest
     ports:
-      - "35100:3000"
+      - "4513:3000"
     networks:
       - monitoring-network
     volumes:
@@ -89,11 +67,11 @@ services:
     image: prom/node-exporter:v1.5.0 
     container_name: node-exportertest
     ports:
-      - "35102:9100"
+      - "9100:9100"
     networks:
       - monitoring-network
     volumes:
-      - /var/lib/node_exporter:/app/metrics:ro
+      - /deploy/monitoring_grafana/metrics/:/app/metrics:ro # /var/lib/node_exporter
     command:
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
       - '--collector.textfile.directory=/app/metrics'
@@ -113,13 +91,13 @@ services:
     restart: unless-stopped
     
 volumes:
-  postgres-datatest:
   grafana-datatest:
   prometheus-datatest:
 
 networks:
   monitoring-network:
     name: monitoring-network
+    external: true
   jupyterhub-network:
     name: jupyterhub-network
     external: true
