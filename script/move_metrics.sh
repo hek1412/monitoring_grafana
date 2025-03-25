@@ -11,6 +11,7 @@ FILES=("pg_metrics.prom" "container_sizes.prom" "image_sizes.prom" "gpu.prom")
 
 # Создаем целевую директорию, если её нет
 mkdir -p "$TARGET_DIR"
+current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
 
 # Переносим файлы
 for FILE_NAME in "${FILES[@]}"; do
@@ -18,8 +19,8 @@ for FILE_NAME in "${FILES[@]}"; do
     if [ -f "$SOURCE_DIR/$FILE_NAME" ]; then
         # Переносим файл в целевую директорию
         cp "$SOURCE_DIR/$FILE_NAME" "$TARGET_DIR/$FILE_NAME"
-        echo "Файл $FILE_NAME перенесен в $TARGET_DIR"
+        echo "[$current_datetime] Файл $FILE_NAME перенесен в $TARGET_DIR"
     else
-        echo "Файл $FILE_NAME не найден в $SOURCE_DIR"
+        echo "[$current_datetime] Файл $FILE_NAME не найден в $SOURCE_DIR"
     fi
 done

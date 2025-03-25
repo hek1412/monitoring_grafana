@@ -1,26 +1,26 @@
 services:
  
-  postgrestest:
-    image: postgres:17.2-bookworm
-    container_name: postgrestest
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD} 
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /var/lib/postgresql/data/
-    ports:
-      - "5434:5432"
-    volumes:
-      - postgres-datatest:/var/lib/postgresql/data/
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres_db" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    restart: unless-stopped
-    networks:
-      - monitoring-network
-      - jupyterhub-network
+  # postgrestest:
+  #   image: postgres:17.2-bookworm
+  #   container_name: postgrestest
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD} 
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     PGDATA: /var/lib/postgresql/data/
+  #   ports:
+  #     - "35102::5432"
+  #   volumes:
+  #     - postgres-datatest:/var/lib/postgresql/data/
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres_db" ]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #   restart: unless-stopped
+  #   networks:
+  #     - monitoring-network
+  #     - jupyterhub-network
 
   pg_metrics_exporter:
     build:
@@ -35,8 +35,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    depends_on:
-      - postgrestest
+    # depends_on:
+    #   - postgrestest
     restart: unless-stopped
     networks:
       - monitoring-network

@@ -58,5 +58,5 @@ nvidia-smi --query-compute-apps=pid,used_memory,process_name --format=csv,nohead
     # Записываем метрику
     echo "gpu_process_memory_usage{pid=\"$pid\", process_name=\"$process_name\"} $used_memory" >> "$output_file"
 done
-
-echo "Метрики успешно записаны в $output_file"
+current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
+echo "[$current_datetime] Метрики успешно записаны в $output_file"

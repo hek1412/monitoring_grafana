@@ -31,10 +31,11 @@ fi
     }
   ' /var/log/auth.log
 } > "$METRICS_FILE"
+current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
 # Проверка успешности записи
 if [ $? -eq 0 ]; then
-  echo "Метрики успешно записаны в $METRICS_FILE"
+  echo "[$current_datetime] Метрики успешно записаны в $METRICS_FILE"
 else
-  echo "Ошибка при записи метрик в $METRICS_FILE"
+  echo "[$current_datetime] Ошибка при записи метрик в $METRICS_FILE"
   exit 1
 fi

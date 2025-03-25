@@ -1,21 +1,15 @@
 # HELP pg_table_size_bytes Size of tables in bytes
 # TYPE pg_table_size_bytes gauge
-pg_table_size_bytes{table_name="table_500", owner="postgres"} 106496
-pg_table_size_bytes{table_name="table_1000", owner="postgres"} 163840
-pg_table_size_bytes{table_name="table_100000", owner="postgres"} 11427840
+pg_table_size_bytes{table_name="test", owner="postgres"} 32768
 # HELP pg_database_size_mb Size of databases in megabytes
 # TYPE pg_database_size_mb gauge
 pg_database_size_mb{database="postgres"} 7
-pg_database_size_mb{database="postgres_db"} 18
+pg_database_size_mb{database="postgres_db"} 7
 pg_database_size_mb{database="template1"} 7
 pg_database_size_mb{database="template0"} 7
 # HELP pg_table_seq_scan_total Total sequential scans
 # TYPE pg_table_seq_scan_total counter
 # HELP pg_table_seq_tup_read_total Total tuples read sequentially
 # TYPE pg_table_seq_tup_read_total counter
-pg_table_seq_scan_total{table_name="table_500", owner="postgres"} 0
-pg_table_seq_tup_read_total{table_name="table_500", owner="postgres"} 0
-pg_table_seq_scan_total{table_name="table_1000", owner="postgres"} 0
-pg_table_seq_tup_read_total{table_name="table_1000", owner="postgres"} 0
-pg_table_seq_scan_total{table_name="table_100000", owner="postgres"} 0
-pg_table_seq_tup_read_total{table_name="table_100000", owner="postgres"} 0
+pg_table_seq_scan_total{table_name="test", owner="postgres"} 7
+pg_table_seq_tup_read_total{table_name="test", owner="postgres"} 21
