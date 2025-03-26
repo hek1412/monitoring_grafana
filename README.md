@@ -72,8 +72,6 @@ Grafana/
 ```
 docker compose up --build -d
 ```
-![image](https://github.com/user-attachments/assets/a67c1e60-e489-4a61-9969-4d01cfc88b44)
-
 
 ### Настройка источника данных в Grafana
 
